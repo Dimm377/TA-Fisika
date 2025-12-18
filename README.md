@@ -107,9 +107,9 @@ Lihat folder `penjelasan_fisika/` untuk:
 
 ## 👥 Tim
 
-- **Dimas** - Developer
-- **Daffa** - Developer  
-- **Dharma** - Developer
+- **Dimas** - Developer  **Anggota**
+- **Daffa** - Developer  **Ketua**
+- **Dharma** - Developer **Anggota**
 
 ---
 
