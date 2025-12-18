@@ -44,7 +44,7 @@ streamlit run app.py
 
 ```bash
 # Clone repository
-git clone https://github.com/username/Ta-Fisika.git
+git clone https://github.com/Dimm377/Ta-Fisika.git
 cd Ta-Fisika
 
 # Install dependencies
