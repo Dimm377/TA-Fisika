@@ -1,4 +1,4 @@
-# 🔬 Simulasi Gaya Pegas - Hooke's Law
+# Simulasi Gaya Pegas - Hooke's Law
 
 Aplikasi interaktif untuk mempelajari **Hukum Hooke** dan **sistem massa-pegas** dengan visualisasi real-time.
 
@@ -6,7 +6,7 @@ Aplikasi interaktif untuk mempelajari **Hukum Hooke** dan **sistem massa-pegas**
 
 ---
 
-## 🎬 Demo
+## Demo
 
 Jalankan aplikasi:
 ```bash
@@ -15,32 +15,32 @@ streamlit run app.py
 
 ---
 
-## ✨ Fitur
+## Fitur
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| 🎬 Animasi Real-time | Canvas HTML5 60fps dengan pegas vertikal |
-| 📊 Grafik Interaktif | Plotly dengan zoom, pan, hover |
-| 🔬 Validasi Numerik | Perbandingan dengan solusi analitik |
-| 📈 Analisis FFT | Identifikasi frekuensi dominan |
-| 🌀 Analisis Resonansi | Kurva respons frekuensi |
-| 📥 Ekspor CSV | Download data simulasi |
+| Animasi Real-time | Canvas HTML5 60fps dengan pegas vertikal |
+| Grafik Interaktif | Plotly dengan zoom, pan, hover |
+| Validasi Numerik | Perbandingan dengan solusi analitik |
+| Analisis FFT | Identifikasi frekuensi dominan |
+| Analisis Resonansi | Kurva respons frekuensi |
+| Ekspor CSV | Download data simulasi |
 
 ---
 
-## 📦 Preset Real-Life
+## Preset Real-Life
 
 | Sistem | Massa | k (N/m) | Tipe Redaman |
 |--------|-------|---------|--------------|
-| 🚗 Suspensi Mobil | 400 kg | 40000 | Near-critically damped |
-| 🤸 Trampolin | 70 kg | 5000 | Underdamped |
-| 🔬 Pegas Lab | 0.5 kg | 20 | Underdamped |
-| ⚖️ Pegas-Massa | 1 kg | 100 | Underdamped |
-| 🚪 Door Closer | 5 kg | 50 | Overdamped |
+| Suspensi Mobil | 400 kg | 40000 | Near-critically damped |
+| Trampolin | 70 kg | 5000 | Underdamped |
+| Pegas Lab | 0.5 kg | 20 | Underdamped |
+| Pegas-Massa | 1 kg | 100 | Underdamped |
+| Door Closer | 5 kg | 50 | Overdamped |
 
 ---
 
-## 🚀 Instalasi
+## Instalasi
 
 ```bash
 # Clone repository
@@ -56,7 +56,7 @@ streamlit run app.py
 
 ---
 
-## 📐 Rumus Fisika
+## Rumus Fisika
 
 ### Hukum Hooke
 ```
@@ -80,7 +80,7 @@ m·x'' + c·x' + k·x = F(t)
 
 ---
 
-## 📁 Struktur Folder
+## Struktur Folder
 
 ```
 Ta-Fisika/
@@ -96,7 +96,7 @@ Ta-Fisika/
 
 ---
 
-## 📖 Untuk Pembelajaran
+## Untuk Pembelajaran
 
 Lihat folder `penjelasan_fisika/` untuk:
 - Potongan kode dengan penjelasan detail
@@ -105,7 +105,7 @@ Lihat folder `penjelasan_fisika/` untuk:
 
 ---
 
-## 👥 Tim
+## Tim
 
 - **Dimas** - Developer
 - **Daffa** - Developer  
@@ -113,6 +113,6 @@ Lihat folder `penjelasan_fisika/` untuk:
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 
 MIT License - Bebas digunakan untuk keperluan edukasi.

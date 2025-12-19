@@ -1,5 +1,5 @@
 """
-🎨 Visualisasi dan Animasi Pegas
+ Visualisasi dan Animasi Pegas
 ================================
 
 Modul ini menyediakan:
@@ -91,7 +91,7 @@ def create_spring_animation_figure(solution: dict, x_scale: float = 1.0) -> tupl
     ax_anim.set_ylim(-0.3, 1.3)
     ax_anim.set_aspect('equal')
     ax_anim.axis('off')
-    ax_anim.set_title('🔬 Animasi Sistem Massa-Pegas', color=COLORS['text'], fontsize=14, fontweight='bold')
+    ax_anim.set_title(' Animasi Sistem Massa-Pegas', color=COLORS['text'], fontsize=14, fontweight='bold')
     
     # Wall
     wall = FancyBboxPatch((-0.4, 0.2), 0.15, 0.6, 
@@ -142,7 +142,7 @@ def create_spring_animation_figure(solution: dict, x_scale: float = 1.0) -> tupl
     pos_marker, = ax_pos.plot([0], [x_data[0]], 'o', color=COLORS['position'], markersize=8)
     ax_pos.set_xlabel('Waktu (s)', color=COLORS['text'])
     ax_pos.set_ylabel('Posisi (m)', color=COLORS['text'])
-    ax_pos.set_title('📍 Posisi vs Waktu', color=COLORS['text'], fontsize=11)
+    ax_pos.set_title(' Posisi vs Waktu', color=COLORS['text'], fontsize=11)
     ax_pos.grid(True, alpha=0.3, color=COLORS['grid'])
     ax_pos.legend(loc='upper right', facecolor='#1E2329', edgecolor=COLORS['grid'])
     
@@ -157,7 +157,7 @@ def create_spring_animation_figure(solution: dict, x_scale: float = 1.0) -> tupl
     energy_marker, = ax_energy.plot([0], [E_total[0]], 'o', color=COLORS['energy_total'], markersize=8)
     ax_energy.set_xlabel('Waktu (s)', color=COLORS['text'])
     ax_energy.set_ylabel('Energi (J)', color=COLORS['text'])
-    ax_energy.set_title('⚡ Energi vs Waktu', color=COLORS['text'], fontsize=11)
+    ax_energy.set_title(' Energi vs Waktu', color=COLORS['text'], fontsize=11)
     ax_energy.grid(True, alpha=0.3, color=COLORS['grid'])
     ax_energy.legend(loc='upper right', facecolor='#1E2329', edgecolor=COLORS['grid'])
     
@@ -273,14 +273,14 @@ def create_static_plots(solution: dict) -> plt.Figure:
     axes[0, 0].axhline(y=0, color=COLORS['equilibrium'], linestyle='--', alpha=0.5)
     axes[0, 0].set_xlabel('Waktu (s)', color=COLORS['text'])
     axes[0, 0].set_ylabel('Posisi (m)', color=COLORS['text'])
-    axes[0, 0].set_title('📍 Posisi x(t)', color=COLORS['text'], fontweight='bold')
+    axes[0, 0].set_title(' Posisi x(t)', color=COLORS['text'], fontweight='bold')
     
     # Velocity
     axes[0, 1].plot(t, v, color=COLORS['velocity'], linewidth=1.5)
     axes[0, 1].axhline(y=0, color=COLORS['grid'], linestyle='--', alpha=0.5)
     axes[0, 1].set_xlabel('Waktu (s)', color=COLORS['text'])
     axes[0, 1].set_ylabel('Kecepatan (m/s)', color=COLORS['text'])
-    axes[0, 1].set_title('🏃 Kecepatan v(t)', color=COLORS['text'], fontweight='bold')
+    axes[0, 1].set_title(' Kecepatan v(t)', color=COLORS['text'], fontweight='bold')
     
     # Phase space
     axes[1, 0].plot(x, v, color=COLORS['position'], linewidth=1.5)
@@ -290,7 +290,7 @@ def create_static_plots(solution: dict) -> plt.Figure:
     axes[1, 0].axvline(x=0, color=COLORS['grid'], linestyle='--', alpha=0.5)
     axes[1, 0].set_xlabel('Posisi (m)', color=COLORS['text'])
     axes[1, 0].set_ylabel('Kecepatan (m/s)', color=COLORS['text'])
-    axes[1, 0].set_title('🌀 Phase Space', color=COLORS['text'], fontweight='bold')
+    axes[1, 0].set_title(' Phase Space', color=COLORS['text'], fontweight='bold')
     axes[1, 0].legend(facecolor='#1E2329', edgecolor=COLORS['grid'])
     
     # Energy
@@ -300,7 +300,7 @@ def create_static_plots(solution: dict) -> plt.Figure:
     axes[1, 1].axhline(y=E_total[0], color=COLORS['text'], linestyle=':', alpha=0.5, label='E₀')
     axes[1, 1].set_xlabel('Waktu (s)', color=COLORS['text'])
     axes[1, 1].set_ylabel('Energi (J)', color=COLORS['text'])
-    axes[1, 1].set_title('⚡ Energi', color=COLORS['text'], fontweight='bold')
+    axes[1, 1].set_title(' Energi', color=COLORS['text'], fontweight='bold')
     axes[1, 1].legend(loc='upper right', facecolor='#1E2329', edgecolor=COLORS['grid'])
     
     # Add info box

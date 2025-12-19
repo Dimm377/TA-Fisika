@@ -1,5 +1,5 @@
 """
-🔬 Simulasi Gaya Pegas - Hooke's Law
+ Simulasi Gaya Pegas - Hooke's Law
 ====================================
 Tugas Akhir Fisika Komputasi
 
@@ -101,7 +101,7 @@ PRESETS = {
         c=4000,        # Koefisien redaman shock absorber (Ns/m)
         x0=0.05,       # Displacement awal 5cm
         v0=0,
-        name="🚗 Suspensi Mobil",
+        name=" Suspensi Mobil",
         description="Suspensi mobil sedan. Dirancang near-critically damped untuk kenyamanan."
     ),
     "trampoline": SpringParameters(
@@ -110,7 +110,7 @@ PRESETS = {
         c=100,         # Redaman kecil untuk bouncing (Ns/m)
         x0=0.3,        # Defleksi 30cm
         v0=-2,         # Kecepatan jatuh (m/s)
-        name="🤸 Trampolin",
+        name=" Trampolin",
         description="Trampolin rekreasi. Underdamped untuk efek memantul."
     ),
     "lab_spring": SpringParameters(
@@ -119,7 +119,7 @@ PRESETS = {
         c=0.1,         # Redaman minimal (Ns/m)
         x0=0.1,        # Tarik 10cm
         v0=0,
-        name="🔬 Pegas Laboratorium",
+        name=" Pegas Laboratorium",
         description="Pegas heliks standar untuk praktikum fisika dasar."
     ),
     "spring_mass": SpringParameters(
@@ -128,7 +128,7 @@ PRESETS = {
         c=2,           # Redaman kecil (Ns/m)
         x0=0.2,        # Displacement awal 20cm
         v0=0,          # Diam dari posisi ditarik
-        name="⚖️ Sistem Pegas-Massa",
+        name="️ Sistem Pegas-Massa",
         description="Sistem pegas-massa ideal untuk demonstrasi hukum Hooke dan osilasi harmonik."
     ),
     "door_closer": SpringParameters(
@@ -137,7 +137,7 @@ PRESETS = {
         c=30,          # Redaman tinggi (Ns/m)
         x0=1.0,        # Sudut buka (dianalogikan)
         v0=0,
-        name="🚪 Door Closer",
+        name=" Door Closer",
         description="Mekanisme penutup pintu otomatis. Overdamped untuk menutup pelan."
     ),
 }
@@ -149,21 +149,6 @@ PRESETS = {
 
 def spring_ode(state: np.ndarray, t: float, params: SpringParameters,
                F_ext: Callable[[float], float] = None) -> np.ndarray:
-    """
-    Persamaan diferensial sistem massa-pegas (INTI FISIKA)
-    
-    HUKUM NEWTON II untuk sistem pegas:
-        ΣF = ma
-        F_pegas + F_redaman + F_eksternal = m * a
-        -kx - cv + F(t) = m * (d²x/dt²)
-    
-    Disusun ulang:
-        m·x'' + c·x' + k·x = F(t)
-    
-    Diubah ke sistem orde-1 untuk solver numerik:
-        x' = v           (kecepatan = turunan posisi)
-        v' = (F - cv - kx) / m   (percepatan dari Hukum Newton II)
-    """
     x, v = state  # x = posisi (m), v = kecepatan (m/s)
     
     # Gaya eksternal F(t) - bisa berupa step, harmonik, atau impuls
@@ -317,7 +302,7 @@ def impulse_force(amplitude: float = 100, t_center: float = 1, width: float = 0.
 # ============================================================
 
 PHYSICS_EXPLANATION = """
-## 📐 Model Fisika
+##  Model Fisika
 
 ### Persamaan Gerak
 
@@ -604,7 +589,7 @@ def generate_conclusions(solution: dict, validation: dict = None,
     conclusions = []
     
     # 1. Karakteristik Sistem
-    conclusions.append("## 🔬 Kesimpulan Analisis")
+    conclusions.append("##  Kesimpulan Analisis")
     conclusions.append("")
     conclusions.append("### 1. Karakteristik Sistem")
     conclusions.append(f"- **Tipe sistem**: {params.damping_type.value}")
@@ -652,11 +637,11 @@ def generate_conclusions(solution: dict, validation: dict = None,
     conclusions.append(f"- Energi terdisipasi: **{energy_loss:.2f}%**")
     
     if energy_loss < 1:
-        conclusions.append("- ✅ Sistem mendekati **konservasi energi** (losses < 1%)")
+        conclusions.append("-  Sistem mendekati **konservasi energi** (losses < 1%)")
     elif energy_loss < 50:
-        conclusions.append("- ⚠️ Terjadi **disipasi energi moderat** akibat redaman")
+        conclusions.append("- ️ Terjadi **disipasi energi moderat** akibat redaman")
     else:
-        conclusions.append("- 🔴 Terjadi **disipasi energi signifikan** (sistem heavily damped)")
+        conclusions.append("-  Terjadi **disipasi energi signifikan** (sistem heavily damped)")
     
     # 4. Validasi Numerik (jika tersedia)
     if validation:
@@ -667,9 +652,9 @@ def generate_conclusions(solution: dict, validation: dict = None,
         conclusions.append(f"- Korelasi: **{validation['correlation']:.6f}**")
         
         if validation['is_accurate']:
-            conclusions.append("- ✅ Solusi numerik **tervalidasi akurat**")
+            conclusions.append("-  Solusi numerik **tervalidasi akurat**")
         else:
-            conclusions.append("- ⚠️ Error numerik melebihi toleransi, pertimbangkan dt lebih kecil")
+            conclusions.append("- ️ Error numerik melebihi toleransi, pertimbangkan dt lebih kecil")
     
     # 5. Analisis Frekuensi (jika tersedia)
     if fft_result and params.zeta < 1:
@@ -680,7 +665,7 @@ def generate_conclusions(solution: dict, validation: dict = None,
         conclusions.append(f"- Perbedaan: **{fft_result['freq_error']:.2f}%**")
         
         if fft_result['freq_error'] < 5:
-            conclusions.append("- ✅ FFT **konsisten** dengan teori")
+            conclusions.append("-  FFT **konsisten** dengan teori")
     
     # 6. Implikasi Praktis
     conclusions.append("")

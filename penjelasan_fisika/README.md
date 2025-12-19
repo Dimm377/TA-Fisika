@@ -1,12 +1,12 @@
-# 📚 Folder Penjelasan Fisika Gaya Pegas
+# Folder Penjelasan Fisika Gaya Pegas
 
 Folder ini berisi kode-kode yang berhubungan dengan **gaya pegas** untuk dipelajari dan dijelaskan saat presentasi.
 
-> ⚠️ **CATATAN:** File di folder ini **TIDAK untuk di-run**, hanya untuk referensi pembelajaran.
+> **CATATAN:** File di folder ini **TIDAK untuk di-run**, hanya untuk referensi pembelajaran.
 
 ---
 
-## 📁 Isi Folder
+## Isi Folder
 
 | File | Deskripsi |
 |------|-----------|
@@ -15,7 +15,7 @@ Folder ini berisi kode-kode yang berhubungan dengan **gaya pegas** untuk dipelaj
 
 ---
 
-## 🎯 Bagian yang Perlu Dijelaskan
+## Bagian yang Perlu Dijelaskan
 
 ### 1. Hukum Hooke
 ```
@@ -50,7 +50,7 @@ PE = ½kx²  (Potensial Pegas)
 
 ---
 
-## 📖 Tips Presentasi
+## Tips Presentasi
 
 1. **Mulai dari Hukum Hooke** - Jelaskan bahwa gaya pegas berbanding lurus dengan displacement
 2. **Tunjukkan persamaan gerak** - Gabungan 3 gaya: pegas, redaman, eksternal
@@ -60,7 +60,7 @@ PE = ½kx²  (Potensial Pegas)
 
 ---
 
-## 🔗 File Utama (Untuk Di-run)
+## File Utama (Untuk Di-run)
 
 - `/home/dimm/Ta-Fisika/app.py` - Aplikasi Streamlit
 - `/home/dimm/Ta-Fisika/spring_physics.py` - Logic fisika

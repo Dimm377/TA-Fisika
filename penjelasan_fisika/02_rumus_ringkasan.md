@@ -1,4 +1,4 @@
-# 📐 Ringkasan Rumus Fisika Gaya Pegas
+# Ringkasan Rumus Fisika Gaya Pegas
 
 ## 1. Hukum Hooke (Gaya Pegas)
 ```

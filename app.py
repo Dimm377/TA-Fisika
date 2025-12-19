@@ -1,5 +1,5 @@
 """
-🔬 Simulasi Gaya Pegas - Hooke's Law
+ Simulasi Gaya Pegas - Hooke's Law
 ====================================
 
 Aplikasi Streamlit interaktif untuk simulasi sistem massa-pegas.
@@ -55,7 +55,7 @@ from spring_visualization import (
 
 st.set_page_config(
     page_title="Simulasi Gaya Pegas",
-    page_icon="🔬",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -425,7 +425,7 @@ st.markdown("""
 
 st.markdown("""
 <div class="main-header">
-    <h1>🔬 Simulasi Gaya Pegas</h1>
+    <h1> Simulasi Gaya Pegas</h1>
     <p style="color: #94A3B8; margin-top: 0.5rem;">
         Eksplorasi Hukum Hooke dan Dinamika Sistem Massa-Pegas
     </p>
@@ -441,27 +441,27 @@ st.markdown("""
 # ============================================================
 
 # Mobile-friendly settings in main area
-with st.expander("⚙️ **Pengaturan Simulasi** (Klik untuk buka/tutup)", expanded=True):
+with st.expander("️ **Pengaturan Simulasi** (Klik untuk buka/tutup)", expanded=True):
     mode = st.radio(
         "Mode Simulasi:",
-        ["📦 Preset Real-Life", "🔧 Custom"],
+        [" Preset Real-Life", " Custom"],
         horizontal=True,
         key="main_mode"
     )
     
-    if mode == "📦 Preset Real-Life":
+    if mode == " Preset Real-Life":
         preset_names = list(PRESETS.keys())
         preset_labels = [PRESETS[k].name for k in preset_names]
         
         selected_label = st.selectbox(
-            "🎯 Pilih Contoh Sistem:",
+            " Pilih Contoh Sistem:",
             preset_labels,
             key="main_preset"
         )
         
         selected_key = preset_names[preset_labels.index(selected_label)]
         params = PRESETS[selected_key]
-        st.success(f"📋 {params.description}")
+        st.success(f" {params.description}")
         
         # Show parameters
         pc1, pc2, pc3, pc4 = st.columns(4)
@@ -487,7 +487,7 @@ with st.expander("⚙️ **Pengaturan Simulasi** (Klik untuk buka/tutup)", expan
         t_max = st.slider("⏱️ Durasi (s)", 1.0, 30.0, 10.0, 0.5, key="main_tmax")
     with tc2:
         force_type = st.selectbox(
-            "🌊 Gaya Eksternal:",
+            " Gaya Eksternal:",
             ["Tanpa Gaya", "Step Force", "Harmonic Force"],
             key="main_force"
         )
@@ -513,8 +513,8 @@ with col2:
 with col3:
     st.metric("Rasio Redaman ζ", f"{params.zeta:.3f}")
 with col4:
-    damping_icon = {"Tanpa Redaman": "🟢", "Underdamped": "🔵", 
-                    "Critically Damped": "🟡", "Overdamped": "🔴"}
+    damping_icon = {"Tanpa Redaman": "🟢", "Underdamped": "", 
+                    "Critically Damped": "🟡", "Overdamped": ""}
     st.metric("Tipe Redaman", f"{damping_icon.get(params.damping_type.value, '')} {params.damping_type.value[:10]}")
 with col5:
     energy_loss = (solution['E_total'][0] - solution['E_total'][-1]) / solution['E_total'][0] * 100
@@ -524,16 +524,16 @@ st.markdown("---")
 
 # Tabs - 6 tabs untuk analisis lengkap
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "🎬 Animasi", 
-    "📊 Grafik", 
-    "🔬 Validasi & FFT", 
-    "📚 Teori", 
-    "🎯 Kesimpulan",
-    "📥 Ekspor"
+    " Animasi", 
+    " Grafik", 
+    " Validasi & FFT", 
+    " Teori", 
+    " Kesimpulan",
+    " Ekspor"
 ])
 
 with tab1:
-    st.markdown("### 🎬 Animasi Sistem Massa-Pegas")
+    st.markdown("###  Animasi Sistem Massa-Pegas")
     st.caption("Animasi berjalan smooth 60 FPS langsung di browser. Klik Play untuk memulai!")
     
     # Prepare data for JavaScript
@@ -568,7 +568,7 @@ with tab1:
     </style>
     <div style="background: linear-gradient(180deg, #1a1f2e 0%, #0d1117 100%); border-radius: 16px; padding: 25px; border: 1px solid #30363d; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
         <div style="text-align: center; margin-bottom: 15px;">
-            <span class="spring-title" style="color: #58a6ff; font-size: 18px; font-weight: bold;">🔬 {params.name}</span>
+            <span class="spring-title" style="color: #58a6ff; font-size: 18px; font-weight: bold;"> {params.name}</span>
         </div>
         
         <div id="springCanvasContainer" style="width: 100%; max-width: 100%; overflow: hidden;">
@@ -589,17 +589,17 @@ with tab1:
                 color: #c9d1d9; border: 1px solid #30363d; padding: 14px 25px;
                 border-radius: 10px; font-size: 14px; cursor: pointer;
                 transition: all 0.3s; display: flex; align-items: center; gap: 6px;">
-                <span>🔄</span> Reset
+                <span></span> Reset
             </button>
             <select id="speedSelect" onchange="changeSpeed()" style="
                 background: linear-gradient(135deg, #21262d, #30363d);
                 color: #c9d1d9; border: 1px solid #30363d; padding: 14px 20px;
                 border-radius: 10px; font-size: 14px; cursor: pointer;">
-                <option value="0.25">🐢 0.25x</option>
-                <option value="0.5">🚶 0.5x</option>
-                <option value="1" selected>🏃 1x</option>
-                <option value="2">🚀 2x</option>
-                <option value="4">⚡ 4x</option>
+                <option value="0.25"> 0.25x</option>
+                <option value="0.5"> 0.5x</option>
+                <option value="1" selected> 1x</option>
+                <option value="2"> 2x</option>
+                <option value="4"> 4x</option>
             </select>
         </div>
         
@@ -620,15 +620,15 @@ with tab1:
                 <div id="timeVal" class="stat-value" style="color: #f0f6fc; font-size: 22px; font-weight: bold; margin-top: 8px; font-family: 'Courier New', monospace;">0.000 s</div>
             </div>
             <div style="background: linear-gradient(135deg, #161b22, #0d1117); padding: 18px 12px; border-radius: 12px; text-align: center; border: 1px solid #21262d;">
-                <div style="color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">📍 Posisi</div>
+                <div style="color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;"> Posisi</div>
                 <div id="posVal" class="stat-value" style="color: #58a6ff; font-size: 22px; font-weight: bold; margin-top: 8px; font-family: 'Courier New', monospace;">0.0000 m</div>
             </div>
             <div style="background: linear-gradient(135deg, #161b22, #0d1117); padding: 18px 12px; border-radius: 12px; text-align: center; border: 1px solid #21262d;">
-                <div style="color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">🏃 Kecepatan</div>
+                <div style="color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;"> Kecepatan</div>
                 <div id="velVal" class="stat-value" style="color: #3fb950; font-size: 22px; font-weight: bold; margin-top: 8px; font-family: 'Courier New', monospace;">0.000 m/s</div>
             </div>
             <div style="background: linear-gradient(135deg, #161b22, #0d1117); padding: 18px 12px; border-radius: 12px; text-align: center; border: 1px solid #21262d;">
-                <div style="color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">⚡ Energi</div>
+                <div style="color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;"> Energi</div>
                 <div id="energyVal" class="stat-value" style="color: #f85149; font-size: 22px; font-weight: bold; margin-top: 8px; font-family: 'Courier New', monospace;">0.0000 J</div>
             </div>
         </div>
@@ -961,9 +961,19 @@ with tab1:
     
     import streamlit.components.v1 as components
     components.html(animation_html, height=650)
+    
+    # Keterangan Parameter
+    st.markdown("---")
+    st.markdown("### Parameter Sistem")
+    p1, p2, p3, p4, p5 = st.columns(5)
+    p1.metric("Massa (m)", f"{params.m} kg")
+    p2.metric("Konstanta (k)", f"{params.k} N/m")
+    p3.metric("Redaman (c)", f"{params.c} Ns/m")
+    p4.metric("Frek. Natural", f"{params.omega_n:.2f} rad/s")
+    p5.metric("Rasio Redaman", f"{params.zeta:.4f}")
 
 with tab2:
-    st.markdown("### 📊 Grafik Analisis Interaktif")
+    st.markdown("###  Grafik Analisis Interaktif")
     st.caption("Grafik interaktif dengan zoom, pan, dan hover. Double-click untuk reset view.")
     
     import plotly.graph_objects as go
@@ -1127,7 +1137,7 @@ with tab2:
     st.markdown("---")
     
     # Animated Phase Space
-    st.markdown("### 🌀 Animasi Phase Space")
+    st.markdown("###  Animasi Phase Space")
     st.caption("Lihat evolusi sistem dalam ruang fase dengan trail yang memudar")
     
     # Sample for animation performance
@@ -1152,7 +1162,7 @@ with tab2:
             <button onclick="resetPhase()" style="
                 background: #30363d; color: #c9d1d9; border: none; padding: 10px 20px;
                 border-radius: 8px; font-size: 14px; cursor: pointer;">
-                🔄 Reset
+                 Reset
             </button>
             <select id="trailLength" onchange="updateTrail()" style="
                 background: #30363d; color: #c9d1d9; border: none; padding: 10px 15px;
@@ -1264,7 +1274,7 @@ with tab2:
             
             // Title
             pCtx.font = 'bold ' + Math.max(12, 16 * Math.min(scaleX, scaleY)) + 'px Arial';
-            pCtx.fillText('🌀 Phase Space Trajectory', 300 * scaleX, 40 * scaleY);
+            pCtx.fillText(' Phase Space Trajectory', 300 * scaleX, 40 * scaleY);
             
             // Time display
             pCtx.font = Math.max(10, 14 * Math.min(scaleX, scaleY)) + 'px monospace';
@@ -1349,14 +1359,14 @@ with tab2:
     st.markdown("---")
     
     # Statistics
-    st.markdown("### 📈 Statistik Simulasi")
+    st.markdown("###  Statistik Simulasi")
     
     stat_col1, stat_col2, stat_col3, stat_col4 = st.columns(4)
     
     with stat_col1:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #1e3a5f, #0d2137); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #3b82f6;">
-            <div style="color: #9ca3af; font-size: 11px;">📍 Amplitudo</div>
+            <div style="color: #9ca3af; font-size: 11px;"> Amplitudo</div>
             <div style="color: #60a5fa; font-size: 20px; font-weight: bold;">{:.4f} m</div>
         </div>
         """.format((x.max() - x.min())/2), unsafe_allow_html=True)
@@ -1364,7 +1374,7 @@ with tab2:
     with stat_col2:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #1e3a2f, #0d2117); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #22c55e;">
-            <div style="color: #9ca3af; font-size: 11px;">🏃 Vmax</div>
+            <div style="color: #9ca3af; font-size: 11px;"> Vmax</div>
             <div style="color: #4ade80; font-size: 20px; font-weight: bold;">{:.4f} m/s</div>
         </div>
         """.format(abs(v).max()), unsafe_allow_html=True)
@@ -1372,7 +1382,7 @@ with tab2:
     with stat_col3:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #3a2f1e, #21170d); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #f59e0b;">
-            <div style="color: #9ca3af; font-size: 11px;">⚡ E₀</div>
+            <div style="color: #9ca3af; font-size: 11px;"> E₀</div>
             <div style="color: #fbbf24; font-size: 20px; font-weight: bold;">{:.4f} J</div>
         </div>
         """.format(solution['E_total'][0]), unsafe_allow_html=True)
@@ -1381,17 +1391,17 @@ with tab2:
         energy_loss = (solution['E_total'][0] - solution['E_total'][-1]) / solution['E_total'][0] * 100
         st.markdown("""
         <div style="background: linear-gradient(135deg, #3a1e2f, #210d17); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #ec4899;">
-            <div style="color: #9ca3af; font-size: 11px;">📉 Dissipated</div>
+            <div style="color: #9ca3af; font-size: 11px;"> Dissipated</div>
             <div style="color: #f472b6; font-size: 20px; font-weight: bold;">{:.1f}%</div>
         </div>
         """.format(energy_loss), unsafe_allow_html=True)
 
 with tab3:
-    st.markdown("### 🔬 Validasi Numerik & Analisis Frekuensi")
+    st.markdown("###  Validasi Numerik & Analisis Frekuensi")
     st.caption("Memvalidasi akurasi solusi numerik dan menganalisis spektrum frekuensi")
     
     # Validasi numerik
-    st.markdown("#### 📐 Validasi vs Solusi Analitik")
+    st.markdown("####  Validasi vs Solusi Analitik")
     
     validation = validate_numerical_solution(solution)
     
@@ -1399,7 +1409,7 @@ with tab3:
     val_col1.metric("Max Error", f"{validation['max_error']:.2e} m")
     val_col2.metric("RMS Error", f"{validation['rms_error']:.2e} m")
     val_col3.metric("Korelasi", f"{validation['correlation']:.6f}")
-    val_col4.metric("Status", "✅ Akurat" if validation['is_accurate'] else "⚠️ Perlu review")
+    val_col4.metric("Status", " Akurat" if validation['is_accurate'] else "️ Perlu review")
     
     # Plot perbandingan
     fig_val, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4), facecolor='#0E1117')
@@ -1433,7 +1443,7 @@ with tab3:
     st.markdown("---")
     
     # FFT Analysis
-    st.markdown("#### 📊 Analisis Frekuensi (FFT)")
+    st.markdown("####  Analisis Frekuensi (FFT)")
     
     fft_result = frequency_analysis(solution)
     
@@ -1472,7 +1482,7 @@ with tab3:
     st.markdown("---")
     
     # Resonance analysis
-    st.markdown("#### 🎯 Kurva Resonansi")
+    st.markdown("####  Kurva Resonansi")
     
     resonance = resonance_analysis(params)
     
@@ -1508,7 +1518,7 @@ with tab4:
     st.markdown(PHYSICS_EXPLANATION)
     
     st.markdown("---")
-    st.markdown("### 🔍 Analisis Sistem Saat Ini")
+    st.markdown("###  Analisis Sistem Saat Ini")
     
     analysis_col1, analysis_col2 = st.columns(2)
     
@@ -1530,14 +1540,14 @@ with tab4:
         if dtype == DampingType.UNDAMPED:
             st.success("🟢 **Sistem Tanpa Redaman**\n\nSistem akan berosilasi terus tanpa kehilangan energi.")
         elif dtype == DampingType.UNDERDAMPED:
-            st.info("🔵 **Sistem Underdamped**\n\nSistem berosilasi dengan amplitudo yang menurun eksponensial.")
+            st.info(" **Sistem Underdamped**\n\nSistem berosilasi dengan amplitudo yang menurun eksponensial.")
         elif dtype == DampingType.CRITICALLY_DAMPED:
             st.warning("🟡 **Sistem Critically Damped**\n\nSistem kembali ke equilibrium secepat mungkin tanpa osilasi.")
         else:
-            st.error("🔴 **Sistem Overdamped**\n\nSistem kembali ke equilibrium dengan lambat tanpa osilasi.")
+            st.error(" **Sistem Overdamped**\n\nSistem kembali ke equilibrium dengan lambat tanpa osilasi.")
 
 with tab5:
-    st.markdown("### 🎯 Kesimpulan Analisis Otomatis")
+    st.markdown("###  Kesimpulan Analisis Otomatis")
     st.caption("Kesimpulan ilmiah yang dihasilkan secara otomatis berdasarkan hasil simulasi")
     
     # Generate conclusions
@@ -1549,14 +1559,14 @@ with tab5:
     
     # Summary metrics in cards
     st.markdown("---")
-    st.markdown("### 📊 Ringkasan Hasil")
+    st.markdown("###  Ringkasan Hasil")
     
     summ_col1, summ_col2, summ_col3 = st.columns(3)
     
     with summ_col1:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #1e3a5f, #0d2137); padding: 20px; border-radius: 12px; border: 1px solid #3b82f6;">
-            <h4 style="color: #60a5fa; margin: 0 0 10px 0;">📐 Akurasi Numerik</h4>
+            <h4 style="color: #60a5fa; margin: 0 0 10px 0;"> Akurasi Numerik</h4>
             <p style="color: #e5e7eb; margin: 0;">
                 Korelasi: <strong>{:.6f}</strong><br>
                 RMS Error: <strong>{:.2e} m</strong>
@@ -1568,7 +1578,7 @@ with tab5:
         energy_loss = (solution['E_total'][0] - solution['E_total'][-1]) / solution['E_total'][0] * 100
         st.markdown("""
         <div style="background: linear-gradient(135deg, #1e3a2f, #0d2117); padding: 20px; border-radius: 12px; border: 1px solid #22c55e;">
-            <h4 style="color: #4ade80; margin: 0 0 10px 0;">⚡ Energi</h4>
+            <h4 style="color: #4ade80; margin: 0 0 10px 0;"> Energi</h4>
             <p style="color: #e5e7eb; margin: 0;">
                 Awal: <strong>{:.4f} J</strong><br>
                 Terdisipasi: <strong>{:.1f}%</strong>
@@ -1579,7 +1589,7 @@ with tab5:
     with summ_col3:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #3a1e3f, #210d21); padding: 20px; border-radius: 12px; border: 1px solid #a855f7;">
-            <h4 style="color: #c084fc; margin: 0 0 10px 0;">🎵 Frekuensi</h4>
+            <h4 style="color: #c084fc; margin: 0 0 10px 0;"> Frekuensi</h4>
             <p style="color: #e5e7eb; margin: 0;">
                 Dominan: <strong>{:.4f} Hz</strong><br>
                 Error: <strong>{:.2f}%</strong>
@@ -1588,18 +1598,18 @@ with tab5:
         """.format(fft_result['dominant_freq'], fft_result['freq_error']), unsafe_allow_html=True)
 
 with tab6:
-    st.markdown("### 📥 Ekspor Data Simulasi")
+    st.markdown("###  Ekspor Data Simulasi")
     st.caption("Unduh hasil simulasi dalam berbagai format")
     
     export_col1, export_col2 = st.columns(2)
     
     with export_col1:
-        st.markdown("#### 📊 Data CSV")
+        st.markdown("####  Data CSV")
         st.info("Format CSV dapat dibuka di Excel, Google Sheets, atau software analisis data lainnya.")
         
         csv_data = export_to_csv(solution)
         st.download_button(
-            label="📥 Download Data (CSV)",
+            label=" Download Data (CSV)",
             data=csv_data,
             file_name=f"simulasi_pegas_{params.name.replace(' ', '_').lower()}.csv",
             mime="text/csv",
@@ -1618,7 +1628,7 @@ with tab6:
         st.dataframe(df_preview, use_container_width=True)
     
     with export_col2:
-        st.markdown("#### 📝 Laporan Markdown")
+        st.markdown("####  Laporan Markdown")
         st.info("Format Markdown ideal untuk dokumentasi dan laporan akademik.")
         
         # Generate full report
@@ -1678,7 +1688,7 @@ with tab6:
 """
         
         st.download_button(
-            label="📥 Download Laporan (Markdown)",
+            label=" Download Laporan (Markdown)",
             data=report_text,
             file_name=f"laporan_pegas_{params.name.replace(' ', '_').lower()}.md",
             mime="text/markdown",
@@ -1693,7 +1703,7 @@ with tab6:
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #6B7280; padding: 1rem;">
-    <p>🔬 <strong>Simulasi Gaya Pegas - Hooke's Law</strong></p>
+    <p> <strong>Simulasi Gaya Pegas - Hooke's Law</strong></p>
     <p>Tugas Akhir Fisika Komputasi | Dimas</p>
     <p style="font-size: 0.8rem;">
         Solver: scipy.integrate.odeint | Visualisasi: matplotlib
