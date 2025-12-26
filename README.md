@@ -36,7 +36,7 @@ streamlit run app.py
 | Trampolin | 70 kg | 5000 | Underdamped |
 | Pegas Lab | 0.5 kg | 20 | Underdamped |
 | Pegas-Massa | 1 kg | 100 | Underdamped |
-| Door Closer | 5 kg | 50 | Overdamped |
+| Pintu Ruang Dosen | 5 kg | 50 | Overdamped |
 
 ---
 
