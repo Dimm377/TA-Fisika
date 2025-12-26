@@ -2,7 +2,7 @@
 
 Aplikasi interaktif untuk mempelajari **Hukum Hooke** dan **sistem massa-pegas** dengan visualisasi real-time.
 
-> Tugas Akhir Fisika Komputasi - Dimas, Daffa, Dharma
+> Tugas Akhir Fisika - Dimas, Daffa, Dharma
 
 ---
 
