@@ -72,7 +72,8 @@ class SpringParameters:
     @property
     def period(self) -> float:
         """Periode osilasi (s)"""
-        if self.zeta >= 1:
+        # Near-critically damped dan overdamped tidak berosilasi
+        if self.zeta >= 0.9:
             return float('inf')
         omega_d = self.omega_n * np.sqrt(1 - self.zeta**2)
         return 2 * np.pi / omega_d
@@ -82,10 +83,10 @@ class SpringParameters:
         """Klasifikasi tipe redaman"""
         if self.c == 0:
             return DampingType.UNDAMPED
+        elif np.isclose(self.zeta, 1, rtol=0.1):  # zeta 0.9 - 1.1 = critically damped
+            return DampingType.CRITICALLY_DAMPED
         elif self.zeta < 1:
             return DampingType.UNDERDAMPED
-        elif np.isclose(self.zeta, 1, rtol=0.01):
-            return DampingType.CRITICALLY_DAMPED
         else:
             return DampingType.OVERDAMPED
 
@@ -98,7 +99,7 @@ PRESETS = {
     "car_suspension": SpringParameters(
         m=400,         # 1/4 massa mobil (kg)
         k=40000,       # Konstanta pegas suspensi (N/m)
-        c=4000,        # Koefisien redaman shock absorber (Ns/m)
+        c=7200,        # Koefisien redaman shock absorber (Ns/m) - untuk zeta ~ 0.9
         x0=0.05,       # Displacement awal 5cm
         v0=0,
         name=" Suspensi Mobil",
@@ -134,7 +135,7 @@ PRESETS = {
     "door_closer": SpringParameters(
         m=5,           # Massa efektif pintu (kg)
         k=50,          # Konstanta pegas (N/m)
-        c=30,          # Redaman tinggi (Ns/m)
+        c=50,          # Redaman tinggi (Ns/m) - c > 2*sqrt(k*m) = 31.6 untuk overdamped
         x0=1.0,        # Sudut buka (dianalogikan)
         v0=0,
         name=" Door Closer",
@@ -381,7 +382,7 @@ def analytical_solution(params: SpringParameters, t: np.ndarray) -> Tuple[np.nda
             (-alpha * B - omega_d * A) * np.sin(omega_d * t)
         )
         
-    elif np.isclose(zeta, 1, rtol=0.01):  # Critically damped
+    elif np.isclose(zeta, 1, rtol=0.1):  # Critically damped (zeta 0.9 - 1.1)
         A = x0
         B = v0 + omega_n * x0
         
@@ -486,12 +487,12 @@ def frequency_analysis(solution: dict) -> dict:
     dominant_idx = np.argmax(amplitudes)
     dominant_freq = frequencies[dominant_idx]
     
-    # Frekuensi teoritis
-    if params.zeta < 1:
+    # Frekuensi teoritis - hanya untuk underdamped (zeta < 0.9)
+    if params.zeta < 0.9:
         omega_d = params.omega_n * np.sqrt(1 - params.zeta**2)
         theoretical_freq = omega_d / (2 * np.pi)
     else:
-        theoretical_freq = 0  # Tidak ada osilasi
+        theoretical_freq = 0  # Near-critical dan overdamped tidak berosilasi
     
     # Error
     if theoretical_freq > 0:

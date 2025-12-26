@@ -514,8 +514,8 @@ with col3:
     st.metric("Rasio Redaman ζ", f"{params.zeta:.3f}")
 with col4:
     damping_icon = {"Tanpa Redaman": "🟢", "Underdamped": "", 
-                    "Critically Damped": "🟡", "Overdamped": ""}
-    st.metric("Tipe Redaman", f"{damping_icon.get(params.damping_type.value, '')} {params.damping_type.value[:10]}")
+                    "Critically Damped": "", "Overdamped": ""}
+    st.metric("Tipe Redaman", f"{damping_icon.get(params.damping_type.value, '')} {params.damping_type.value}")
 with col5:
     energy_loss = (solution['E_total'][0] - solution['E_total'][-1]) / solution['E_total'][0] * 100
     st.metric("Energi Hilang", f"{energy_loss:.1f}%")
@@ -1684,7 +1684,7 @@ with tab6:
 {conclusions_md}
 
 ---
-*Laporan dibuat oleh Simulasi Gaya Pegas - Tugas Akhir Fisika Komputasi*
+* Simulasi Gaya Pegas - Tugas Akhir Fisika*
 """
         
         st.download_button(
@@ -1704,9 +1704,6 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #6B7280; padding: 1rem;">
     <p> <strong>Simulasi Gaya Pegas - Hooke's Law</strong></p>
-    <p>Tugas Akhir Fisika Komputasi | Dimas</p>
-    <p style="font-size: 0.8rem;">
-        Solver: scipy.integrate.odeint | Visualisasi: matplotlib
-    </p>
+    <p>Tugas Akhir Fisika</p>
 </div>
 """, unsafe_allow_html=True)
