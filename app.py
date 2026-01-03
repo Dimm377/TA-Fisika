@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-from spring_physics import (
+from physics_config.spring_physics import (
     SpringParameters,
     PRESETS,
     DampingType,
@@ -34,20 +34,19 @@ from spring_physics import (
     harmonic_force,
     impulse_force,
     PHYSICS_EXPLANATION,
-    # Premium features
     validate_numerical_solution,
     frequency_analysis,
     resonance_analysis,
     generate_conclusions,
     export_to_csv
 )
-from spring_visualization import (
+from physics_config.spring_visualization import (
     create_static_plots,
     create_spring_animation_figure,
     draw_spring,
     COLORS
 )
-from config import (
+from physics_config.config import (
     APP_TITLE, APP_SUBTITLE,
     DEFAULT_DURATION_SECONDS, MIN_DURATION, MAX_DURATION,
     ANIMATION_MAX_POINTS,
@@ -78,7 +77,7 @@ st.set_page_config(
 
 import os
 
-def load_css(css_file: str = "styles.css") -> str:
+def load_css(css_file: str = "styles/styles.css") -> str:
     """Load CSS from external file."""
     css_path = os.path.join(os.path.dirname(__file__), css_file)
     with open(css_path, "r") as f:
