@@ -154,12 +154,18 @@ python -m pip install nama_package
 
 ```
 Ta-Fisika/
-├── venv/                 # Folder virtual environment (jangan di-commit ke Git)
-│   ├── Scripts/          # File aktivasi dan executables
-│   ├── Lib/              # Package Python terinstal
+├── venv/                     # Folder virtual environment (jangan di-commit ke Git)
+│   ├── Scripts/              # File aktivasi dan executables
+│   ├── Lib/                  # Package Python terinstal
 │   └── ...
-├── app.py
-├── requirements.txt      # Daftar dependencies
+├── app.py                    # Entry point aplikasi
+├── physics_config/           # Physics engine & config
+│   ├── config.py
+│   ├── spring_physics.py
+│   └── spring_visualization.py
+├── styles/
+│   └── styles.css
+├── requirements.txt          # Daftar dependencies
 └── ...
 ```
 

@@ -84,12 +84,17 @@ m·x'' + c·x' + k·x = F(t)
 
 ```
 Ta-Fisika/
-├── app.py                 # Aplikasi Streamlit utama
-├── spring_physics.py      # Logic fisika & solver
-├── spring_visualization.py # Fungsi visualisasi
-├── requirements.txt       # Dependencies
-├── README.md              # Dokumentasi
-└── penjelasan_fisika/     # Folder pembelajaran
+├── app.py                    # Aplikasi Streamlit utama
+├── physics_config/           # Physics engine & configuration
+│   ├── __init__.py
+│   ├── config.py             # Constants & settings
+│   ├── spring_physics.py     # Logic fisika & solver
+│   └── spring_visualization.py
+├── styles/
+│   └── styles.css            # Custom CSS styling
+├── requirements.txt          # Dependencies
+├── README.md
+└── penjelasan_fisika/        # Folder pembelajaran
     ├── 01_kode_gaya_pegas.py
     └── 02_rumus_ringkasan.md
 ```
