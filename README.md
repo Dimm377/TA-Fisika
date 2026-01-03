@@ -2,7 +2,7 @@
 
 Aplikasi interaktif untuk mempelajari **Hukum Hooke** dan **sistem massa-pegas** dengan visualisasi real-time.
 
-> Tugas Akhir Fisika Komputasi - Dimas, Daffa, Dharma
+> Tugas Akhir Fisika - Dimas, Daffa, Dharma
 
 ---
 
@@ -36,7 +36,7 @@ streamlit run app.py
 | Trampolin | 70 kg | 5000 | Underdamped |
 | Pegas Lab | 0.5 kg | 20 | Underdamped |
 | Pegas-Massa | 1 kg | 100 | Underdamped |
-| Door Closer | 5 kg | 50 | Overdamped |
+| Pintu Ruang Dosen | 5 kg | 50 | Overdamped |
 
 ---
 
@@ -107,9 +107,9 @@ Lihat folder `penjelasan_fisika/` untuk:
 
 ## Tim
 
-- **Dimas** - Developer  (**Anggota**)
-- **Daffa** - Developer  (**Ketua**)
-- **Dharma** - Developer (**Anggota**)
+- **Dimas**  (**Anggota**)
+- **Daffa**  (**Ketua**)
+- **Dharma** (**Anggota**)
 
 ---
 
