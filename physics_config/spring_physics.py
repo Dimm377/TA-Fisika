@@ -5,7 +5,7 @@ Tugas Akhir Fisika Komputasi
 
 Model Fisika:
     m·x'' + c·x' + k·x = F(t)
-    
+
 Dimana:
     m = massa (kg)
     c = koefisien redaman (Ns/m)
@@ -19,7 +19,8 @@ Author: Dimas, Daffa, Dharma
 import numpy as np
 from scipy.integrate import odeint
 from dataclasses import dataclass
-from typing import Callable, Tuple, Optional
+from typing import Callable, Tuple
+
 from enum import Enum
 
 
@@ -41,12 +42,12 @@ class SpringParameters:
     v0: float     # Kecepatan awal (m/s)
     name: str = "Custom"
     description: str = ""
-    
+
     @property
     def omega_n(self) -> float:
         """
         Frekuensi natural (rad/s)
-        
+
         FISIKA: omega_n = sqrt(k/m)
         - Ini adalah frekuensi osilasi sistem tanpa redaman
         - Semakin besar k (pegas kaku), semakin cepat osilasi
@@ -54,12 +55,12 @@ class SpringParameters:
         """
         # Rumus: ω_n = √(k/m) - frekuensi natural sistem
         return np.sqrt(self.k / self.m)
-    
+
     @property
     def zeta(self) -> float:
         """
         Rasio redaman (damping ratio)
-        
+
         FISIKA: zeta = c / (2 * sqrt(k*m))
         - zeta = 0: tidak ada redaman (osilasi terus)
         - 0 < zeta < 1: underdamped (osilasi teredam)
@@ -68,7 +69,7 @@ class SpringParameters:
         """
         # Rumus: ζ = c / (2√km) - rasio antara redaman aktual vs redaman kritis
         return self.c / (2 * np.sqrt(self.k * self.m))
-    
+
     @property
     def period(self) -> float:
         """Periode osilasi (s)"""
@@ -77,7 +78,7 @@ class SpringParameters:
             return float('inf')
         omega_d = self.omega_n * np.sqrt(1 - self.zeta**2)
         return 2 * np.pi / omega_d
-    
+
     @property
     def damping_type(self) -> DampingType:
         """Klasifikasi tipe redaman"""
@@ -145,127 +146,146 @@ PRESETS = {
 
 
 # ============================================================
+# PHYSICS CALCULATIONS
+# ============================================================
+
+def calculate_spring_force(spring_constant: float, displacement: float) -> float:
+    """Hooke's Law: F = -kx"""
+    return -spring_constant * displacement
+
+
+def calculate_damping_force(damping_coefficient: float, velocity: float) -> float:
+    """Damping force opposes motion: F = -cv"""
+    return -damping_coefficient * velocity
+
+
+def calculate_net_force(spring_constant: float, damping_coefficient: float,
+                        displacement: float, velocity: float,
+                        external_force: float = 0) -> float:
+    """Sum of all forces acting on the mass"""
+    spring = calculate_spring_force(spring_constant, displacement)
+    damping = calculate_damping_force(damping_coefficient, velocity)
+    return external_force + spring + damping
+
+
+def calculate_acceleration(mass: float, net_force: float) -> float:
+    """Newton's Second Law: a = F/m"""
+    return net_force / mass
+
+
+# ============================================================
 # ODE SOLVER
 # ============================================================
 
-def spring_ode(state: np.ndarray, t: float, params: SpringParameters,
-               F_ext: Callable[[float], float] = None) -> np.ndarray:
-    x, v = state  # x = posisi (m), v = kecepatan (m/s)
-    
-    # Gaya eksternal F(t) - bisa berupa step, harmonik, atau impuls
-    F = F_ext(t) if F_ext else 0
-    
-    # ============================================
-    # IMPLEMENTASI HUKUM HOOKE DAN NEWTON II
-    # ============================================
-    
-    # dx/dt = v (definisi kecepatan)
-    dxdt = v
-    
-    # dv/dt = a = (ΣF) / m
-    # Dimana gaya-gaya yang bekerja:
-    #   - Gaya pegas (Hooke's Law): F_pegas = -k*x (tanda negatif karena berlawanan arah displacement)
-    #   - Gaya redaman: F_redaman = -c*v (tanda negatif karena berlawanan arah gerak)
-    #   - Gaya eksternal: F_ext = F(t)
-    # 
-    # ΣF = F_ext - k*x - c*v
-    # a = (F_ext - k*x - c*v) / m
-    
-    dvdt = (F - params.c * v - params.k * x) / params.m
-    #       ↑        ↑              ↑              ↑
-    #    F_ext   F_redaman    F_pegas(Hooke)    massa
-    
-    return np.array([dxdt, dvdt])
+def spring_system_derivatives(state: np.ndarray, time: float,
+                              params: SpringParameters,
+                              external_force_function: Callable = None) -> np.ndarray:
+    """
+    Calculate derivatives for the spring-mass-damper system.
+
+    State: [position, velocity]
+    Returns: [velocity, acceleration]
+    """
+    position, velocity = state
+
+    external_force = external_force_function(time) if external_force_function else 0
+
+    net_force = calculate_net_force(
+        spring_constant=params.k,
+        damping_coefficient=params.c,
+        displacement=position,
+        velocity=velocity,
+        external_force=external_force
+    )
+
+    acceleration = calculate_acceleration(params.m, net_force)
+
+    return np.array([velocity, acceleration])
 
 
-def solve_spring_system(params: SpringParameters, 
-                        t_span: Tuple[float, float],
-                        dt: float = 0.001,
-                        F_ext: Callable[[float], float] = None) -> dict:
+def solve_spring_system(params: SpringParameters,
+                        time_span: Tuple[float, float],
+                        time_step: float = 0.001,
+                        external_force_function: Callable = None) -> dict:
     """
-    Selesaikan sistem massa-pegas menggunakan scipy odeint.
-    
-    Parameters:
-    -----------
-    params : SpringParameters - Parameter sistem
-    t_span : Tuple[float, float] - (t_start, t_end)
-    dt : float - Time step
-    F_ext : Callable - Fungsi gaya eksternal F(t)
-    
-    Returns:
-    --------
-    dict dengan keys:
-        - t: array waktu
-        - x: array posisi
-        - v: array kecepatan
-        - a: array akselerasi
-        - KE: energi kinetik
-        - PE: energi potensial
-        - E_total: energi total
+    Solve spring-mass-damper system using numerical integration.
+
+    Returns dict with: t, x, v, a, KE, PE, E_total, E_dissipated, params
     """
-    # Generate time array
-    t = np.arange(t_span[0], t_span[1], dt)
-    
-    # Initial state
-    state0 = [params.x0, params.v0]
-    
-    # Solve ODE
-    solution = odeint(spring_ode, state0, t, args=(params, F_ext))
-    
-    x = solution[:, 0]
-    v = solution[:, 1]
-    
-    # ============================================
-    # MENGHITUNG PERCEPATAN DARI HUKUM NEWTON II
-    # ============================================
-    # a = (F_ext - c*v - k*x) / m
-    # Ini adalah implementasi langsung dari: ΣF = ma
-    a = np.zeros_like(t)
-    for i, ti in enumerate(t):
-        F = F_ext(ti) if F_ext else 0
-        # Percepatan = (Gaya total) / massa
-        # Gaya total = F_eksternal - F_redaman - F_pegas
-        a[i] = (F - params.c * v[i] - params.k * x[i]) / params.m
-    
-    # ============================================
-    # ENERGI DALAM SISTEM PEGAS
-    # ============================================
-    
-    # Energi Kinetik: KE = ½mv²
-    # Energi yang dimiliki benda karena geraknya
-    KE = 0.5 * params.m * v**2
-    
-    # Energi Potensial Pegas: PE = ½kx²
-    # HUKUM HOOKE: Energi tersimpan dalam pegas yang terdeformasi
-    # Ini berasal dari integral gaya pegas: ∫F dx = ∫kx dx = ½kx²
-    PE = 0.5 * params.k * x**2
-    
-    # Energi Total: E = KE + PE
-    # Untuk sistem tanpa redaman (c=0), E_total = konstan (konservasi energi)
-    # Untuk sistem dengan redaman (c>0), E_total berkurang seiring waktu
-    E_total = KE + PE
-    
-    # ============================================
-    # ENERGI YANG TERDISIPASI OLEH REDAMAN
-    # ============================================
-    # Daya disipasi = c * v² (energi hilang per satuan waktu)
-    # Energi disipasi = integral dari daya disipasi
-    E_dissipated = np.zeros_like(t)
-    for i in range(1, len(t)):
-        # Energi terdisipasi bertambah seiring waktu
-        E_dissipated[i] = E_dissipated[i-1] + params.c * v[i]**2 * dt
-    
+    time_array = np.arange(time_span[0], time_span[1], time_step)
+    initial_state = [params.x0, params.v0]
+
+    # Solve differential equation
+    solution = odeint(
+        spring_system_derivatives,
+        initial_state,
+        time_array,
+        args=(params, external_force_function)
+    )
+
+    position = solution[:, 0]
+    velocity = solution[:, 1]
+
+    # Calculate acceleration at each time point
+    acceleration = calculate_acceleration_array(
+        params, time_array, position, velocity, external_force_function
+    )
+
+    # Calculate energies
+    kinetic_energy = calculate_kinetic_energy(params.m, velocity)
+    potential_energy = calculate_potential_energy(params.k, position)
+    total_energy = kinetic_energy + potential_energy
+    dissipated_energy = calculate_dissipated_energy(params.c, velocity, time_step)
+
     return {
-        't': t,
-        'x': x,
-        'v': v,
-        'a': a,
-        'KE': KE,
-        'PE': PE,
-        'E_total': E_total,
-        'E_dissipated': E_dissipated,
+        't': time_array,
+        'x': position,
+        'v': velocity,
+        'a': acceleration,
+        'KE': kinetic_energy,
+        'PE': potential_energy,
+        'E_total': total_energy,
+        'E_dissipated': dissipated_energy,
         'params': params
     }
+
+
+def calculate_acceleration_array(params: SpringParameters, time_array: np.ndarray,
+                                 position: np.ndarray, velocity: np.ndarray,
+                                 external_force_function: Callable = None) -> np.ndarray:
+    """Calculate acceleration at each time point"""
+    acceleration = np.zeros_like(time_array)
+
+    for i, t in enumerate(time_array):
+        external_force = external_force_function(t) if external_force_function else 0
+        net_force = calculate_net_force(
+            params.k, params.c, position[i], velocity[i], external_force
+        )
+        acceleration[i] = calculate_acceleration(params.m, net_force)
+
+    return acceleration
+
+
+def calculate_kinetic_energy(mass: float, velocity: np.ndarray) -> np.ndarray:
+    """KE = ½mv²"""
+    return 0.5 * mass * velocity**2
+
+
+def calculate_potential_energy(spring_constant: float, displacement: np.ndarray) -> np.ndarray:
+    """PE = ½kx² (Hooke's Law energy)"""
+    return 0.5 * spring_constant * displacement**2
+
+
+def calculate_dissipated_energy(damping_coefficient: float, velocity: np.ndarray,
+                                time_step: float) -> np.ndarray:
+    """Energy lost to damping over time"""
+    dissipated = np.zeros_like(velocity)
+
+    for i in range(1, len(velocity)):
+        power_dissipated = damping_coefficient * velocity[i]**2
+        dissipated[i] = dissipated[i - 1] + power_dissipated * time_step
+
+    return dissipated
 
 
 # ============================================================
@@ -350,9 +370,9 @@ Untuk sistem tanpa redaman, $E_{total} = KE + PE = konstan$
 def analytical_solution(params: SpringParameters, t: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Solusi analitik untuk osilator harmonik teredam (tanpa gaya eksternal).
-    
+
     Digunakan untuk memvalidasi akurasi metode numerik.
-    
+
     Returns:
     --------
     (x_analytical, v_analytical) - tuple array posisi dan kecepatan
@@ -361,51 +381,51 @@ def analytical_solution(params: SpringParameters, t: np.ndarray) -> Tuple[np.nda
     zeta = params.zeta
     x0 = params.x0
     v0 = params.v0
-    
+
     if params.c == 0:  # Undamped
         # x(t) = A*cos(ωt) + B*sin(ωt)
         A = x0
         B = v0 / omega_n
         x = A * np.cos(omega_n * t) + B * np.sin(omega_n * t)
         v = -A * omega_n * np.sin(omega_n * t) + B * omega_n * np.cos(omega_n * t)
-        
+
     elif zeta < 1:  # Underdamped
         omega_d = omega_n * np.sqrt(1 - zeta**2)  # Damped frequency
         alpha = zeta * omega_n
-        
+
         A = x0
         B = (v0 + alpha * x0) / omega_d
-        
+
         x = np.exp(-alpha * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
         v = np.exp(-alpha * t) * (
-            (-alpha * A + omega_d * B) * np.cos(omega_d * t) +
-            (-alpha * B - omega_d * A) * np.sin(omega_d * t)
+            (-alpha * A + omega_d * B) * np.cos(omega_d * t)
+            + (-alpha * B - omega_d * A) * np.sin(omega_d * t)
         )
-        
+
     elif np.isclose(zeta, 1, rtol=0.1):  # Critically damped (zeta 0.9 - 1.1)
         A = x0
         B = v0 + omega_n * x0
-        
+
         x = np.exp(-omega_n * t) * (A + B * t)
         v = np.exp(-omega_n * t) * (B - omega_n * (A + B * t))
-        
+
     else:  # Overdamped
         r1 = -omega_n * (zeta + np.sqrt(zeta**2 - 1))
         r2 = -omega_n * (zeta - np.sqrt(zeta**2 - 1))
-        
+
         A = (r2 * x0 - v0) / (r2 - r1)
         B = (v0 - r1 * x0) / (r2 - r1)
-        
+
         x = A * np.exp(r1 * t) + B * np.exp(r2 * t)
         v = A * r1 * np.exp(r1 * t) + B * r2 * np.exp(r2 * t)
-    
+
     return x, v
 
 
 def validate_numerical_solution(solution: dict) -> dict:
     """
     Validasi solusi numerik dengan membandingkan ke solusi analitik.
-    
+
     Returns:
     --------
     dict dengan metrik error:
@@ -417,24 +437,24 @@ def validate_numerical_solution(solution: dict) -> dict:
     params = solution['params']
     t = solution['t']
     x_numerical = solution['x']
-    
+
     # Dapatkan solusi analitik
     x_analytical, _ = analytical_solution(params, t)
-    
+
     # Hitung berbagai metrik error
     error = x_numerical - x_analytical
     max_error = np.max(np.abs(error))
     rms_error = np.sqrt(np.mean(error**2))
-    
+
     # Relative error (hindari division by zero)
     with np.errstate(divide='ignore', invalid='ignore'):
         rel_error = np.abs(error) / np.abs(x_analytical)
         rel_error = np.nan_to_num(rel_error, nan=0, posinf=0, neginf=0)
     relative_error = np.mean(rel_error) * 100  # Dalam persen
-    
+
     # Korelasi
     correlation = np.corrcoef(x_numerical, x_analytical)[0, 1]
-    
+
     return {
         'x_analytical': x_analytical,
         'max_error': max_error,
@@ -452,10 +472,10 @@ def validate_numerical_solution(solution: dict) -> dict:
 def frequency_analysis(solution: dict) -> dict:
     """
     Analisis frekuensi menggunakan Fast Fourier Transform.
-    
+
     Berguna untuk mengidentifikasi frekuensi dominan dalam sistem
     dan memvalidasi frekuensi natural teoritis.
-    
+
     Returns:
     --------
     dict dengan:
@@ -468,38 +488,38 @@ def frequency_analysis(solution: dict) -> dict:
     t = solution['t']
     x = solution['x']
     params = solution['params']
-    
+
     # Sampling parameters
     dt = t[1] - t[0]
     N = len(t)
-    
+
     # FFT
     fft_result = np.fft.fft(x)
     frequencies = np.fft.fftfreq(N, dt)
     amplitudes = np.abs(fft_result) / N * 2  # Normalize
-    
+
     # Hanya ambil frekuensi positif
     positive_mask = frequencies > 0
     frequencies = frequencies[positive_mask]
     amplitudes = amplitudes[positive_mask]
-    
+
     # Frekuensi dominan
     dominant_idx = np.argmax(amplitudes)
     dominant_freq = frequencies[dominant_idx]
-    
+
     # Frekuensi teoritis - hanya untuk underdamped (zeta < 0.9)
     if params.zeta < 0.9:
         omega_d = params.omega_n * np.sqrt(1 - params.zeta**2)
         theoretical_freq = omega_d / (2 * np.pi)
     else:
         theoretical_freq = 0  # Near-critical dan overdamped tidak berosilasi
-    
+
     # Error
     if theoretical_freq > 0:
         freq_error = abs(dominant_freq - theoretical_freq) / theoretical_freq * 100
     else:
         freq_error = 0
-    
+
     return {
         'frequencies': frequencies,
         'amplitudes': amplitudes,
@@ -513,14 +533,14 @@ def frequency_analysis(solution: dict) -> dict:
 # ANALISIS RESONANSI
 # ============================================================
 
-def resonance_analysis(params: SpringParameters, 
+def resonance_analysis(params: SpringParameters,
                        omega_range: Tuple[float, float] = None,
                        n_points: int = 100) -> dict:
     """
     Analisis respons frekuensi untuk menentukan kurva resonansi.
-    
+
     Menghitung amplitudo steady-state sebagai fungsi frekuensi driving.
-    
+
     Returns:
     --------
     dict dengan:
@@ -532,33 +552,33 @@ def resonance_analysis(params: SpringParameters,
     """
     omega_n = params.omega_n
     zeta = params.zeta
-    
+
     # Default range: 0.1 to 3x natural frequency
     if omega_range is None:
         omega_range = (0.1 * omega_n, 3 * omega_n)
-    
+
     omega = np.linspace(omega_range[0], omega_range[1], n_points)
-    
+
     # Amplitudo respons (normalized)
     # |H(ω)| = 1 / sqrt((1 - r²)² + (2ζr)²) where r = ω/ωn
     r = omega / omega_n
     amplitude = 1 / np.sqrt((1 - r**2)**2 + (2 * zeta * r)**2)
-    
+
     # Frekuensi resonansi
     if zeta < 1 / np.sqrt(2):
         resonance_omega = omega_n * np.sqrt(1 - 2 * zeta**2)
     else:
         resonance_omega = 0  # No resonance peak
-    
+
     # Quality factor
     if zeta > 0:
         Q_factor = 1 / (2 * zeta)
     else:
         Q_factor = float('inf')
-    
+
     # Bandwidth (3dB)
     bandwidth = 2 * zeta * omega_n
-    
+
     return {
         'omega': omega,
         'amplitude': amplitude,
@@ -572,23 +592,23 @@ def resonance_analysis(params: SpringParameters,
 # KESIMPULAN OTOMATIS
 # ============================================================
 
-def generate_conclusions(solution: dict, validation: dict = None, 
+def generate_conclusions(solution: dict, validation: dict = None,
                          fft_result: dict = None) -> str:
     """
     Generate kesimpulan ilmiah otomatis berdasarkan hasil simulasi.
-    
+
     Returns:
     --------
     str - Kesimpulan dalam format markdown
     """
     params = solution['params']
-    t = solution['t']
+    # t = solution['t']  # Unused
     x = solution['x']
-    v = solution['v']
+    # v = solution['v']  # Unused
     E_total = solution['E_total']
-    
+
     conclusions = []
-    
+
     # 1. Karakteristik Sistem
     conclusions.append("##  Kesimpulan Analisis")
     conclusions.append("")
@@ -596,19 +616,19 @@ def generate_conclusions(solution: dict, validation: dict = None,
     conclusions.append(f"- **Tipe sistem**: {params.damping_type.value}")
     conclusions.append(f"- **Frekuensi natural (ωₙ)**: {params.omega_n:.4f} rad/s")
     conclusions.append(f"- **Rasio redaman (ζ)**: {params.zeta:.4f}")
-    
+
     if params.zeta < 1:
         omega_d = params.omega_n * np.sqrt(1 - params.zeta**2)
         conclusions.append(f"- **Frekuensi teredam (ωd)**: {omega_d:.4f} rad/s")
         conclusions.append(f"- **Periode osilasi**: {params.period:.4f} s")
-    
+
     # 2. Perilaku Dinamis
     conclusions.append("")
     conclusions.append("### 2. Perilaku Dinamis")
-    
+
     x_max = np.max(np.abs(x))
-    v_max = np.max(np.abs(v))
-    
+    # v_max = np.max(np.abs(v))  # Unused
+
     if params.damping_type == DampingType.UNDAMPED:
         conclusions.append(f"- Sistem berosilasi dengan amplitudo konstan **{x_max:.4f} m**")
         conclusions.append("- Tidak ada kehilangan energi (konservasi energi)")
@@ -624,26 +644,26 @@ def generate_conclusions(solution: dict, validation: dict = None,
     else:  # Overdamped
         conclusions.append("- Sistem kembali ke equilibrium **sangat lambat tanpa osilasi**")
         conclusions.append("- Cocok untuk aplikasi yang membutuhkan gerakan halus")
-    
+
     # 3. Analisis Energi
     conclusions.append("")
     conclusions.append("### 3. Analisis Energi")
-    
+
     E_initial = E_total[0]
     E_final = E_total[-1]
     energy_loss = (E_initial - E_final) / E_initial * 100
-    
+
     conclusions.append(f"- Energi awal: **{E_initial:.6f} J**")
     conclusions.append(f"- Energi akhir: **{E_final:.6f} J**")
     conclusions.append(f"- Energi terdisipasi: **{energy_loss:.2f}%**")
-    
+
     if energy_loss < 1:
         conclusions.append("-  Sistem mendekati **konservasi energi** (losses < 1%)")
     elif energy_loss < 50:
         conclusions.append("- ️ Terjadi **disipasi energi moderat** akibat redaman")
     else:
         conclusions.append("-  Terjadi **disipasi energi signifikan** (sistem heavily damped)")
-    
+
     # 4. Validasi Numerik (jika tersedia)
     if validation:
         conclusions.append("")
@@ -651,12 +671,12 @@ def generate_conclusions(solution: dict, validation: dict = None,
         conclusions.append(f"- Max error vs analitik: **{validation['max_error']:.2e} m**")
         conclusions.append(f"- RMS error: **{validation['rms_error']:.2e} m**")
         conclusions.append(f"- Korelasi: **{validation['correlation']:.6f}**")
-        
+
         if validation['is_accurate']:
             conclusions.append("-  Solusi numerik **tervalidasi akurat**")
         else:
             conclusions.append("- ️ Error numerik melebihi toleransi, pertimbangkan dt lebih kecil")
-    
+
     # 5. Analisis Frekuensi (jika tersedia)
     if fft_result and params.zeta < 1:
         conclusions.append("")
@@ -664,21 +684,21 @@ def generate_conclusions(solution: dict, validation: dict = None,
         conclusions.append(f"- Frekuensi dominan (FFT): **{fft_result['dominant_freq']:.4f} Hz**")
         conclusions.append(f"- Frekuensi teoritis: **{fft_result['theoretical_freq']:.4f} Hz**")
         conclusions.append(f"- Perbedaan: **{fft_result['freq_error']:.2f}%**")
-        
+
         if fft_result['freq_error'] < 5:
             conclusions.append("-  FFT **konsisten** dengan teori")
-    
+
     # 6. Implikasi Praktis
     conclusions.append("")
     conclusions.append("### 6. Implikasi Praktis")
-    
+
     if "Suspensi" in params.name:
         conclusions.append("- Untuk suspensi kendaraan, ζ ~ 0.3-0.5 memberikan keseimbangan kenyamanan dan handling")
     elif "Lab" in params.name:
         conclusions.append("- Pegas laboratorium cocok untuk demonstrasi Hooke's Law dan osilasi harmonik sederhana")
     elif "Pegas-Massa" in params.name:
         conclusions.append("- Sistem pegas-massa klasik mendemonstrasikan osilasi harmonik teredam")
-    
+
     return "\n".join(conclusions)
 
 
@@ -689,13 +709,13 @@ def generate_conclusions(solution: dict, validation: dict = None,
 def export_to_csv(solution: dict, filename: str = "simulation_data.csv") -> str:
     """
     Ekspor hasil simulasi ke format CSV.
-    
+
     Returns:
     --------
     str - CSV content
     """
     import io
-    
+
     t = solution['t']
     x = solution['x']
     v = solution['v']
@@ -703,12 +723,11 @@ def export_to_csv(solution: dict, filename: str = "simulation_data.csv") -> str:
     KE = solution['KE']
     PE = solution['PE']
     E_total = solution['E_total']
-    
+
     output = io.StringIO()
     output.write("t(s),x(m),v(m/s),a(m/s2),KE(J),PE(J),E_total(J)\n")
-    
+
     for i in range(len(t)):
         output.write(f"{t[i]:.6f},{x[i]:.6f},{v[i]:.6f},{a[i]:.6f},{KE[i]:.6f},{PE[i]:.6f},{E_total[i]:.6f}\n")
-    
-    return output.getvalue()
 
+    return output.getvalue()
