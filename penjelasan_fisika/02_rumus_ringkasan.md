@@ -5,11 +5,22 @@
 
 ## 1. Hukum Dasar
 
-### Hukum Hooke
-Gaya pemulih selalu berlawanan dengan arah simpangan.
+### Hukum Hooke dan Gaya Pegas
+Hukum Hooke menyatakan bahwa gaya yang diberikan oleh pegas sebanding dengan perubahan panjangnya. Gaya ini disebut **Gaya Pemulih** (*Restoring Force*) karena selalu berusaha mengembalikan pegas ke posisi setimbangnya.
+
 ```math
 F_{pegas} = -k \cdot x
 ```
+
+**Penjelasan Variabel:**
+- **$F_{pegas}$**: Gaya pegas (Newton, N).
+- **$k$**: Konstanta pegas (N/m). Menunjukkan tingkat "kekakuan" pegas.
+  - Nilai $k$ besar = Pegas kaku (mobil, suspensi).
+  - Nilai $k$ kecil = Pegas lunak (per pulpen).
+- **$x$**: Simpangan atau perubahan panjang dari posisi setimbang (meter).
+- **tanda negatif (-)**: Menunjukkan arah gaya selalu berlawanan dengan arah simpangan $x$.
+  - Jika ditarik ke bawah ($x$ positif), gaya menarik ke atas ($F$ negatif).
+  - Jika ditekan ke atas ($x$ negatif), gaya mendorong ke bawah ($F$ positif).
 
 ### Hukum Newton II (Persamaan Gerak)
 Total gaya menentukan percepatan benda.
@@ -75,7 +86,7 @@ Total energi selalu berkurang jika ada redaman (diubah menjadi panas).
 
 ## 6. Fenomena Resonansi
 
-Terjadi jika gaya eksternal $F(t) = F_0 \sin(\omega t)$ frekuensinya mendekati frekuensi natural sistem.
+Terjadi jika gaya eksternal $F (t) = F_0 \sin(\omega t)$ frekuensinya mendekati frekuensi natural sistem.
 
 - **Frekuensi Resonansi Puncak**: $\omega_{res} = \omega_n \sqrt{1 - 2\zeta^2}$
 - **Amplifikasi Maksimum (Q-Factor)**: Seberapa kuat getarannya saat resonansi.

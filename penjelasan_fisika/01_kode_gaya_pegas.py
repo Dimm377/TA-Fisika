@@ -7,7 +7,7 @@ File ini berisi implementasi inti sistem massa-pegas.
 
 import numpy as np
 from scipy.integrate import odeint
-from typing import Callable, Optional, Dict
+from typing import Dict
 from dataclasses import dataclass
 
 
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     hasil = jalankan_simulasi(sistem, durasi=5.0)
 
-    print(f"=== SIMULASI SELESAI ===")
+    print("=== SIMULASI SELESAI ===")
     print(f"Sistem: {sistem.massa}kg, {sistem.konstanta_pegas}N/m")
     print(f"Frekuensi Natural: {sistem.frekuensi_natural:.2f} rad/s")
     print(f"Posisi Akhir: {hasil['x'][-1]:.4f} m (Mendekati 0)")

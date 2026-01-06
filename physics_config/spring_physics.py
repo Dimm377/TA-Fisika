@@ -19,7 +19,7 @@ Author: Dimas, Daffa, Dharma
 import numpy as np
 from scipy.integrate import odeint
 from dataclasses import dataclass
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Optional
 
 from enum import Enum
 
@@ -107,7 +107,7 @@ PRESETS = {
         description="Suspensi mobil sedan. Dirancang near-critically damped untuk kenyamanan."
     ),
     "trampoline": SpringParameters(
-        m=70,          # Massa orang dewasa (kg)
+        m= 15,          # Massa orang dewasa (kg)
         k=5000,        # Konstanta pegas trampolin (N/m)
         c=100,         # Redaman kecil untuk bouncing (Ns/m)
         x0=0.3,        # Defleksi 30cm
@@ -179,7 +179,7 @@ def calculate_acceleration(mass: float, net_force: float) -> float:
 
 def spring_system_derivatives(state: np.ndarray, time: float,
                               params: SpringParameters,
-                              external_force_function: Callable = None) -> np.ndarray:
+                              external_force_function: Optional[Callable] = None) -> np.ndarray:
     """
     Calculate derivatives for the spring-mass-damper system.
 
@@ -206,7 +206,7 @@ def spring_system_derivatives(state: np.ndarray, time: float,
 def solve_spring_system(params: SpringParameters,
                         time_span: Tuple[float, float],
                         time_step: float = 0.001,
-                        external_force_function: Callable = None) -> dict:
+                        external_force_function: Optional[Callable] = None) -> dict:
     """
     Solve spring-mass-damper system using numerical integration.
 
@@ -252,7 +252,7 @@ def solve_spring_system(params: SpringParameters,
 
 def calculate_acceleration_array(params: SpringParameters, time_array: np.ndarray,
                                  position: np.ndarray, velocity: np.ndarray,
-                                 external_force_function: Callable = None) -> np.ndarray:
+                                 external_force_function: Optional[Callable] = None) -> np.ndarray:
     """Calculate acceleration at each time point"""
     acceleration = np.zeros_like(time_array)
 
@@ -534,7 +534,7 @@ def frequency_analysis(solution: dict) -> dict:
 # ============================================================
 
 def resonance_analysis(params: SpringParameters,
-                       omega_range: Tuple[float, float] = None,
+                       omega_range: Optional[Tuple[float, float]] = None,
                        n_points: int = 100) -> dict:
     """
     Analisis respons frekuensi untuk menentukan kurva resonansi.
@@ -592,8 +592,8 @@ def resonance_analysis(params: SpringParameters,
 # KESIMPULAN OTOMATIS
 # ============================================================
 
-def generate_conclusions(solution: dict, validation: dict = None,
-                         fft_result: dict = None) -> str:
+def generate_conclusions(solution: dict, validation: Optional[dict] = None,
+                         fft_result: Optional[dict] = None) -> str:
     """
     Generate kesimpulan ilmiah otomatis berdasarkan hasil simulasi.
 
