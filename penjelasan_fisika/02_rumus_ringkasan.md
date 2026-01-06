@@ -1,100 +1,83 @@
-# Ringkasan Rumus Fisika Gaya Pegas
-
-## 1. Hukum Hooke (Gaya Pegas)
-```
-F = -kx
-```
-| Simbol | Satuan | Keterangan |
-|--------|--------|------------|
-| F | N | Gaya pegas |
-| k | N/m | Konstanta pegas |
-| x | m | Displacement |
+# Ringkasan Rumus Fisika (Cheat Sheet)
+**Tugas Akhir Simulasi Gaya Pegas**
 
 ---
 
-## 2. Persamaan Gerak (Newton II)
+## 1. Hukum Dasar
+
+### Hukum Hooke
+Gaya pemulih selalu berlawanan dengan arah simpangan.
+```math
+F_{pegas} = -k \cdot x
 ```
-m·x'' + c·x' + k·x = F(t)
+
+### Hukum Newton II (Persamaan Gerak)
+Total gaya menentukan percepatan benda.
+```math
+\sum F = m \cdot a
 ```
-atau dalam bentuk standar:
-```
-x'' + 2ζωₙx' + ωₙ²x = F(t)/m
-```
+$$ m \ddot{x} + c \dot{x} + k x = F_{eksternal} $$
 
 ---
 
-## 3. Frekuensi Natural
-```
-ωₙ = √(k/m)
-```
-```
-f = ωₙ/(2π)  [Hz]
-T = 2π/ωₙ   [s]
-```
+## 2. Parameter Kunci
+
+| Parameter | Simbol | Rumus | Keterangan |
+| :--- | :---: | :--- | :--- |
+| **Frekuensi Natural** | $\omega_n$ | $\sqrt{\frac{k}{m}}$ | Kecepatan sudut osilasi tanpa redaman |
+| **Rasio Redaman** | $\zeta$ (zeta) | $\frac{c}{2\sqrt{km}}$ | Menentukan seberapa cepat osilasi mati |
+| **Frekuensi Teredam** | $\omega_d$ | $\omega_n \sqrt{1 - \zeta^2}$ | Frekuensi aktual saat underdamped |
+| **Periode Osilasi** | $T$ | $\frac{2\pi}{\omega_d}$ | Waktu untuk satu siklus penuh |
 
 ---
 
-## 4. Rasio Redaman (Damping Ratio)
-```
-ζ = c / (2√km) = c / (2mωₙ)
-```
+## 3. Klasifikasi Redaman
 
-| Nilai ζ | Tipe | Perilaku |
-|---------|------|----------|
-| ζ = 0 | Undamped | Osilasi terus |
-| 0 < ζ < 1 | Underdamped | Osilasi teredam |
-| ζ = 1 | Critically Damped | Kembali tercepat |
-| ζ > 1 | Overdamped | Kembali lambat |
+Nilai $\zeta$ menentukan perilaku sistem:
 
----
-
-## 5. Frekuensi Teredam (Underdamped)
-```
-ωd = ωₙ√(1 - ζ²)
-```
+| Nilai $\zeta$ | Tipe Sistem | Perilaku Fisik | Contoh |
+| :--- | :--- | :--- | :--- |
+| **$\zeta = 0$** | **Undamped** | Berosilasi selamanya (tidak berhenti). | Pegas ideal di ruang hampa |
+| **$0 < \zeta < 1$** | **Underdamped** | Berosilasi tapi amplitudonya mengecil secara eksponensial. | Trampolin, senar gitar |
+| **$\zeta = 1$** | **Critically Damped** | Tidak berosilasi. Kembali ke titik 0 secepat mungkin. | Shockbreaker motor balap |
+| **$\zeta > 1$** | **Overdamped** | Tidak berosilasi. Kembali ke titik 0 dengan sangat lambat. | Pintu otomatis (door closer) |
 
 ---
 
-## 6. Solusi Underdamped
-```
-x(t) = e^(-ζωₙt) [A·cos(ωd·t) + B·sin(ωd·t)]
-```
+## 4. Solusi Matematis (Posisi $x$ terhadap waktu $t$)
+
+Untuk kasus **Underdamped** ($0 < \zeta < 1$):
+$$ x(t) = e^{-\zeta \omega_n t} \left( A \cos(\omega_d t) + B \sin(\omega_d t) \right) $$
+
+- **$e^{-\zeta \omega_n t}$**: Bagian *decay* (peluruhan eksponensial).
+- **$\cos / \sin$**: Bagian *osilasi*.
 
 ---
 
-## 7. Energi Mekanik
-```
-Energi Kinetik:    KE = ½mv²
-Energi Potensial:  PE = ½kx²
-Energi Total:      E = KE + PE
-```
+## 5. Energi Sistem
+
+Total energi selalu berkurang jika ada redaman (diubah menjadi panas).
+
+1. **Energi Kinetik (Gerak)**
+   $$ EK = \frac{1}{2} m v^2 $$
+
+2. **Energi Potensial (Pegas)**
+   $$ EP = \frac{1}{2} k x^2 $$
+
+3. **Energi Mekanik Total**
+   $$ E_{total} = EK + EP $$
+
+4. **Energi Terdisipasi (Hilang)**
+   Daya yang hilang akibat gesekan: $P = c \cdot v^2$
+   $$ E_{hilang} = \int (c \cdot v^2) dt $$
 
 ---
 
-## 8. Resonansi
-```
-Fungsi Transfer: |H(ω)| = 1/√[(1-r²)² + (2ζr)²]
-dimana r = ω/ωₙ
+## 6. Fenomena Resonansi
 
-Frekuensi Resonansi: ω_res = ωₙ√(1-2ζ²)
-Quality Factor:      Q = 1/(2ζ)
-Bandwidth:           Δω = 2ζωₙ
-```
+Terjadi jika gaya eksternal $F(t) = F_0 \sin(\omega t)$ frekuensinya mendekati frekuensi natural sistem.
 
----
-
-## 9. Implementasi di Kode
-```python
-# Percepatan (Hukum Newton II)
-a = (F_ext - c*v - k*x) / m
-
-# Frekuensi natural
-omega_n = sqrt(k/m)
-
-# Rasio redaman  
-zeta = c / (2*sqrt(k*m))
-
-# Energi
-KE = 0.5 * m * v**2
-PE = 0.5 * k * x**2
-```
+- **Frekuensi Resonansi Puncak**: $\omega_{res} = \omega_n \sqrt{1 - 2\zeta^2}$
+- **Amplifikasi Maksimum (Q-Factor)**: Seberapa kuat getarannya saat resonansi.
+  $$ Q \approx \frac{1}{2\zeta} $$
+  *(Semakin kecil redaman, semakin "gila" getarannya saat resonansi)*
