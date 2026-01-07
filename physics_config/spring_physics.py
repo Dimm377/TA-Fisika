@@ -59,15 +59,17 @@ class SpringParameters:
     @property
     def zeta(self) -> float:
         """
-        Rasio redaman (damping ratio)
+        Rasio Redaman (Damping Ratio) - ζ
 
-        FISIKA: zeta = c / (2 * sqrt(k*m))
-        - zeta = 0: tidak ada redaman (osilasi terus)
-        - 0 < zeta < 1: underdamped (osilasi teredam)
-        - zeta = 1: critically damped (kembali tercepat)
-        - zeta > 1: overdamped (kembali lambat)
+        Menentukan seberapa kuat sistem diredam relatif terhadap redaman kritis.
+
+        LOGIKA FISIKA:
+        - ζ = 0   : Tidak ada redaman (Osilasi selamanya)
+        - 0 < ζ < 1 : Underdamped (Osilasi lalu perlahan berhenti)
+        - ζ = 1   : Critically Damped (Berhenti paling cepat tanpa bablas)
+        - ζ > 1   : Overdamped (Kembali ke posisi 0 dengan lambat)
         """
-        # Rumus: ζ = c / (2√km) - rasio antara redaman aktual vs redaman kritis
+        # Rumus Fisika: ζ = c / (2 * sqrt(k * m))
         return self.c / (2 * np.sqrt(self.k * self.m))
 
     @property
@@ -150,12 +152,29 @@ PRESETS = {
 # ============================================================
 
 def calculate_spring_force(spring_constant: float, displacement: float) -> float:
-    """Hooke's Law: F = -kx"""
+    """
+    HUKUM HOOKE (Gaya Pegas)
+
+    Rumus: F = -k * x
+
+    Keterangan:
+    - Gaya selalu berlawanan arah dengan perpindahan (tanda negatif).
+    - Semakin jauh ditarik (x besar), semakin kuat pegas menarik balik.
+    """
     return -spring_constant * displacement
 
 
 def calculate_damping_force(damping_coefficient: float, velocity: float) -> float:
-    """Damping force opposes motion: F = -cv"""
+    """
+    GAYA REDAMAN (Damping Force)
+
+    Rumus: F = -c * v
+
+    Keterangan:
+    - Gaya gesek yang menghambat gerakan benda.
+    - Semakin cepat bergerak (v besar), semakin kuat hambatannya.
+    - Selalu berlawanan arah dengan kecepatan (tanda negatif).
+    """
     return -damping_coefficient * velocity
 
 
@@ -169,7 +188,15 @@ def calculate_net_force(spring_constant: float, damping_coefficient: float,
 
 
 def calculate_acceleration(mass: float, net_force: float) -> float:
-    """Newton's Second Law: a = F/m"""
+    """
+    HUKUM II NEWTON
+
+    Rumus: a = F_total / m
+
+    Keterangan:
+    - Percepatan benda sebanding dengan total gaya yang bekerja.
+    - Berbanding terbalik dengan massa benda.
+    """
     return net_force / mass
 
 
@@ -181,15 +208,27 @@ def spring_system_derivatives(state: np.ndarray, time: float,
                               params: SpringParameters,
                               external_force_function: Optional[Callable] = None) -> np.ndarray:
     """
-    Calculate derivatives for the spring-mass-damper system.
+    Fungsi Utama ODE Solver (Jantung Simulasi)
 
-    State: [position, velocity]
-    Returns: [velocity, acceleration]
+    Fungsi ini menghitung perubahan state (posisi & kecepatan) pada setiap detik.
+
+    Input:
+      - state: [posisi saat ini, kecepatan saat ini]
+
+    Output:
+      - derivatives: [kecepatan, percepatan]
+
+    Konsep:
+    1. Ambil posisi & kecepatan saat ini.
+    2. Hitung semua gaya (Pegas + Redaman + Eksternal).
+    3. Cari percepatan pakai Hukum Newton (a = F/m).
+    4. Kembalikan [v, a] agar ODE solver bisa memprediksi langkah selanjutnya.
     """
     position, velocity = state
 
     external_force = external_force_function(time) if external_force_function else 0
 
+    # Hitung Total Gaya (Sigma F)
     net_force = calculate_net_force(
         spring_constant=params.k,
         damping_coefficient=params.c,
@@ -198,6 +237,7 @@ def spring_system_derivatives(state: np.ndarray, time: float,
         external_force=external_force
     )
 
+    # Hitung Percepatan (a)
     acceleration = calculate_acceleration(params.m, net_force)
 
     return np.array([velocity, acceleration])
@@ -208,9 +248,16 @@ def solve_spring_system(params: SpringParameters,
                         time_step: float = 0.001,
                         external_force_function: Optional[Callable] = None) -> dict:
     """
-    Solve spring-mass-damper system using numerical integration.
+    Menyelesaikan Sistem Persamaan Diferensial (Solving ODE)
 
-    Returns dict with: t, x, v, a, KE, PE, E_total, E_dissipated, params
+    Fungsi ini melakukan simulasi numerik dari waktu ke waktu.
+
+    Output (Dictionary):
+    - t: Array waktu
+    - x: Array posisi
+    - v: Array kecepatan
+    - a: Array percepatan
+    - KE, PE, E_total: Data energi
     """
     time_array = np.arange(time_span[0], time_span[1], time_step)
     initial_state = [params.x0, params.v0]
